@@ -1,19 +1,15 @@
-# ===== НАСТРОЙКИ ВАШЕГО БОТА =====
+# ===== НАСТРОЙКИ TELEGRAM БОТА =====
+# Вставьте свои данные!
 
-# Токен сообщества (получили ранее)
-TOKEN = "vk1.a._vFq9cRrTCQit4f2q8U_pKvPyoVeTLMlYEw6Df20b_B9F9nGJCwt6nRblVhhVN0oHGxd0U3eBR6MGXqTU41dO2cnweX1sq6-cNKrhFUioP7lZGahllgagf9CMHite_Qru2ptlmOrgLByozSZibkQYlLPzHFrmMiwrepfSRAd0sAzE8T6HyXvekObKGKV73c8RGhrvE7DgZ4iI0DnNoJI1A"  # ЗАМЕНИТЕ НА СВОЙ ТОКЕН
+# Токен от @BotFather
+TOKEN = "8765247018:AAGlVIItGljD7zfEAD_Xax1vUnqqiYHZbx0"  # ЗАМЕНИТЕ НА СВОЙ!
 
-# ID вашей группы (число)
-GROUP_ID = 236826785  # ЗАМЕНИТЕ НА СВОЙ ID
+# ID группы для отчетов (от @getmyid_bot)
+REPORT_CHAT_ID = -5050875556  # ЗАМЕНИТЕ НА СВОЙ!
 
-# ID беседы для отчетов (если нужно отправлять в общий чат)
-# Оставьте 0, если не нужно
-REPORT_PEER_ID = 2000000105  # ПОКА ОСТАВЬТЕ 0, ПОТОМ НАСТРОИМ
-
-# Сотрудники (их VK ID)
+# Сотрудники (их Telegram ID)
 EMPLOYEES = [
-    434480497,  # ВАШ VK ID
-    # Добавьте других сотрудников
+    854882399,  # Ваш Telegram ID (узнайте у @getmyid_bot)
 ]
 
 # Расписание уборок по дням недели
