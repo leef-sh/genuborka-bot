@@ -132,16 +132,76 @@ def send_chat_message(peer_id, message, attachment=None):
 
 def get_attachment_from_event(event):
     """Извлекает attachment из события VK"""
-    if event.attachments:
-        att = event.attachments[0]
-        if att['type'] == 'photo':
-            photo = att['photo']
-            return f"photo{photo['owner_id']}_{photo['id']}"
-        elif att['type'] == 'doc' and att['doc']['ext'] in ['jpg', 'jpeg', 'png', 'gif']:
-            doc = att['doc']
-            return f"doc{doc['owner_id']}_{doc['id']}"
+    try:
+        # Проверяем, есть ли вложения
+        if not hasattr(event, 'attachments') or not event.attachments:
+            return None
+        
+        # В VK API attachments может быть в разных форматах
+        attachments_data = event.attachments
+        
+        # Если это словарь с числовыми ключами
+        if isinstance(attachments_data, dict):
+            # Пробуем получить первый элемент
+            if '0' in attachments_data:
+                att = attachments_data['0']
+            else:
+                # Ищем первый ключ
+                keys = list(attachments_data.keys())
+                if keys:
+                    att = attachments_data[keys[0]]
+                else:
+                    return None
+        # Если это список
+        elif isinstance(attachments_data, list) and len(attachments_data) > 0:
+            att = attachments_data[0]
+        else:
+            return None
+        
+        # Логируем для отладки
+        print(f"📎 Тип вложения: {att.get('type', 'неизвестно')}")
+        
+        # Обработка фото
+        if att.get('type') == 'photo':
+            photo = att.get('photo', {})
+            if photo:
+                owner_id = photo.get('owner_id', '')
+                photo_id = photo.get('id', '')
+                if owner_id and photo_id:
+                    result = f"photo{owner_id}_{photo_id}"
+                    print(f"✅ Получен attachment: {result}")
+                    return result
+        
+        # Обработка документа (если это фото как документ)
+        elif att.get('type') == 'doc':
+            doc = att.get('doc', {})
+            if doc.get('ext') in ['jpg', 'jpeg', 'png', 'gif']:
+                owner_id = doc.get('owner_id', '')
+                doc_id = doc.get('id', '')
+                if owner_id and doc_id:
+                    result = f"doc{owner_id}_{doc_id}"
+                    print(f"✅ Получен attachment документа: {result}")
+                    return result
+        
+        # Альтернативный формат (некоторые версии API)
+        if 'photo' in att:
+            photo_data = att['photo']
+            if isinstance(photo_data, dict):
+                owner_id = photo_data.get('owner_id', '')
+                photo_id = photo_data.get('id', '')
+                if owner_id and photo_id:
+                    result = f"photo{owner_id}_{photo_id}"
+                    print(f"✅ Получен attachment (альт): {result}")
+                    return result
+        
+        print(f"❌ Не удалось распознать вложение: {att}")
+        
+    except Exception as e:
+        print(f"❌ Ошибка в get_attachment_from_event: {e}")
+        import traceback
+        traceback.print_exc()
+    
     return None
-
 def create_tasks_keyboard(user_id):
     """Создает клавиатуру с заданиями"""
     day_key = get_current_day_key()
