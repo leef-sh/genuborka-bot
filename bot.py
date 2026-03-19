@@ -63,6 +63,23 @@ def send_chat_message(peer_id, message, attachment=None):
         params['attachment'] = attachment
     vk.messages.send(**params)
 
+def get_attachment_from_event(event):
+    """Извлекает attachment из события VK"""
+    if event.attachments:
+        # Берем первое вложение
+        att = event.attachments[0]
+        
+        # Формируем строку attachment в формате VK
+        if att['type'] == 'photo':
+            photo = att['photo']
+            # Формат: photo{owner_id}_{id}
+            return f"photo{photo['owner_id']}_{photo['id']}"
+        elif att['type'] == 'doc':
+            doc = att['doc']
+            return f"doc{doc['owner_id']}_{doc['id']}"
+    
+    return None
+
 def create_tasks_keyboard(user_id):
     """Создает клавиатуру с заданиями"""
     day_key = get_current_day_key()
@@ -110,12 +127,6 @@ def create_tasks_keyboard(user_id):
     
     return keyboard
 
-def upload_photo(photo_data):
-    """Загружает фото на сервер ВК (упрощенно)"""
-    # В реальном коде здесь нужно обрабатывать attachments
-    # Возвращает attachment строку вида photo12345_67890
-    pass
-
 # ===== ОСНОВНОЙ ЦИКЛ =====
 print(f"Бот запущен. Время: {datetime.datetime.now()}")
 print(f"Группа ID: {GROUP_ID}")
@@ -124,7 +135,10 @@ print(f"Сотрудники: {EMPLOYEES}")
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
         user_id = event.user_id
-        text = event.text.strip()
+        text = event.text.strip() if event.text else ""
+        
+        print(f"Сообщение от {user_id}: {text}")
+        print(f"Вложения: {event.attachments}")
         
         # Проверка, является ли пользователь сотрудником
         if user_id not in EMPLOYEES:
@@ -179,7 +193,7 @@ for event in longpoll.listen():
             
             send_message(user_id, f"📸 Пришлите фото ДО уборки для: '{task_name}'")
             
-        # Обработка фото
+        # Обработка фото (если есть вложения)
         elif event.attachments:
             # Проверяем, ожидаем ли мы фото
             if not session['waiting_for']:
@@ -188,8 +202,12 @@ for event in longpoll.listen():
             
             task_name = session['current_task']
             
-            # Упрощенно: берем первое вложение
-            attachment = event.attachments[0]
+            # Получаем attachment строку
+            attachment = get_attachment_from_event(event)
+            
+            if not attachment:
+                send_message(user_id, "❌ Не удалось обработать фото. Попробуйте еще раз.")
+                continue
             
             if session['waiting_for'] == 'before':
                 # Сохраняем фото ДО
@@ -209,8 +227,9 @@ for event in longpoll.listen():
                 
                 # Отправляем в беседу (если указан REPORT_PEER_ID)
                 if REPORT_PEER_ID:
-                    # В реальном коде здесь нужно отправить оба фото
-                    send_chat_message(REPORT_PEER_ID, report_text)
+                    # Отправляем оба фото и текст
+                    attachments = f"{session['before_photo']},{attachment}"
+                    send_chat_message(REPORT_PEER_ID, report_text, attachments)
                 
                 # Отмечаем задание как выполненное
                 session['completed'].append(task_name)
@@ -230,5 +249,5 @@ for event in longpoll.listen():
                     send_message(user_id, "📋 Продолжаем уборку:", create_tasks_keyboard(user_id))
         
         # Обработка обычного текста
-        else:
+        elif text:
             send_message(user_id, "Используйте кнопки или /start для начала работы.")
