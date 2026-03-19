@@ -1,7 +1,7 @@
 # ===== НАСТРОЙКИ ВАШЕГО БОТА =====
 
 # Токен сообщества (получили ранее)
-TOKEN = "vk1.a.pcveUliEO2hT7fcPkxenGlJDnT6qbtPNofv1Omdvfz-cYpPbWaC_k8-EOlMJkn4oLuKPl9BBC36f8gZAqqiby2vRIN3nENNV9uBHOMJzWoDw9jUmohFg2Be19pXLOoc12C_KJ9rWUCBmxa6Yps4D8R8grZGCTu_uXvSpo0X1QkyPkmGT0VJJIo_bDbmAViHG2_QW2aMm03FiOEa5AhKOpA"  # ЗАМЕНИТЕ НА СВОЙ ТОКЕН
+TOKEN = "vk1.a._vFq9cRrTCQit4f2q8U_pKvPyoVeTLMlYEw6Df20b_B9F9nGJCwt6nRblVhhVN0oHGxd0U3eBR6MGXqTU41dO2cnweX1sq6-cNKrhFUioP7lZGahllgagf9CMHite_Qru2ptlmOrgLByozSZibkQYlLPzHFrmMiwrepfSRAd0sAzE8T6HyXvekObKGKV73c8RGhrvE7DgZ4iI0DnNoJI1A"  # ЗАМЕНИТЕ НА СВОЙ ТОКЕН
 
 # ID вашей группы (число)
 GROUP_ID = 236826785  # ЗАМЕНИТЕ НА СВОЙ ID
